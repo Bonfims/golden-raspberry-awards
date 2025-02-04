@@ -24,6 +24,9 @@ const csvPath = path.resolve(__dirname, "../..",
     `./data/Movielist.csv`
 );
 
+// ... retorno esperado para a API de intervalos
+const expectedResponse = require("./expected-intervals");
+
 let db;
 
 beforeAll(async () => {
@@ -75,6 +78,8 @@ describe("Testes de integração da API", () => {
                 expect(max).toHaveProperty("previousWin");
                 expect(max).toHaveProperty("followingWin");
             }
+            // ... tentando validar para falhar se o arquivo for modificado de forma que qualquer aspecto do resultado mude
+            expect(res.body).toEqual(expectedResponse);
         });
     });
 
