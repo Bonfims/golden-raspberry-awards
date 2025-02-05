@@ -63,22 +63,25 @@ describe("Testes de integração da API", () => {
             // ... `min` e `max` precisam ser uma lista
             expect(Array.isArray(res.body.max)).toBe(true);
             expect(Array.isArray(res.body.min)).toBe(true);
+
             // ... verifica as propriedades de cada item dentro de `min` e `max`
-            if(res.body.min?.length > 0){
-                const min = res.body.min[0];
-                expect(min).toHaveProperty("producer");
-                expect(min).toHaveProperty("interval");
-                expect(min).toHaveProperty("previousWin");
-                expect(min).toHaveProperty("followingWin");
+            let props = [res.body.min, res.body.max];
+            for(let prop of props){
+                for(let item of prop){
+                    expect(item).toHaveProperty("producer");
+                    expect(item).toHaveProperty("interval");
+                    expect(item).toHaveProperty("followingWin");
+                    expect(item).toHaveProperty("previousWin");
+
+                    // ... adicionando verificação de tipo
+                    expect(typeof item?.producer).toBe("string");
+                    expect(isNaN(item?.interval)).toBe(false);
+                    expect(isNaN(item?.followingWin)).toBe(false);
+                    expect(isNaN(item?.previousWin)).toBe(false);
+                }    
             }
-            if(res.body.max?.length > 0){
-                const max = res.body.max[0];
-                expect(max).toHaveProperty("producer");
-                expect(max).toHaveProperty("interval");
-                expect(max).toHaveProperty("previousWin");
-                expect(max).toHaveProperty("followingWin");
-            }
-            // ... tentando validar para falhar se o arquivo for modificado de forma que qualquer aspecto do resultado mude
+            
+            // ... tentando validar para falhar se o arquivo for modificado de forma que qualquer aspecto do resultado (esperado com base no csv padrão Movielist) mude.
             expect(res.body).toEqual(expectedResponse);
         });
     });
