@@ -44,15 +44,6 @@ afterAll(async () => {
 describe("Testes de integração da API", () => {
     // ...
     describe("Rotas de Produtores", () => {
-        test("GET /api/producers deve retornar uma lista de produtores", async () => {
-            const res = await request(app).get("/api/producers");
-            expect(Array.isArray(res.body)).toBe(true);
-            if (res.body.length > 0) {
-                const producer = res.body[0];
-                expect(producer).toHaveProperty("name");
-                expect(producer).toHaveProperty("movies");
-            }
-        });
 
         test("GET /api/producers/intervals produtores com premiações consecutivas (min/max)", async () => {
             const res = await request(app).get("/api/producers/intervals");
@@ -82,7 +73,18 @@ describe("Testes de integração da API", () => {
             }
             
             // ... tentando validar para falhar se o arquivo for modificado de forma que qualquer aspecto do resultado (esperado com base no csv padrão Movielist) mude.
+            // ... e se eu estiver interpretando bem (assumindo que estamos falando do arquivo csv Movielist), "qualquer aspecto" indica ate mesmo os valores das propriedades.
             expect(res.body).toEqual(expectedResponse);
+        });
+
+        test("GET /api/producers deve retornar uma lista de produtores", async () => {
+            const res = await request(app).get("/api/producers");
+            expect(Array.isArray(res.body)).toBe(true);
+            if (res.body.length > 0) {
+                const producer = res.body[0];
+                expect(producer).toHaveProperty("name");
+                expect(producer).toHaveProperty("movies");
+            }
         });
     });
 
